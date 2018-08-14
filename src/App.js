@@ -3,10 +3,12 @@ import './App.css';
 import request from 'superagent';
 
 const Weather = location => {
+   console.log(location);
    const API_URL = `https://api.darksky.net/forecast/7b99d5e089197748e933189d8174655f/${location.lat},${location.lng}`;
    request
       .get(API_URL)
       .then(response => { 
+        console.log(response.body.currently);
         let weather = response.body.currently.summary;
         document.querySelector(".app__view").textContent = weather;
       });
@@ -31,7 +33,6 @@ class App extends Component {
 
   checkBtn = (e) => {
     e.preventDefault();
-    console.log(e);
     this.setState({
       checked: true
     })
@@ -42,7 +43,7 @@ class App extends Component {
     let value = this.refs.inputLocation.value;
     if (value !== '') {
       let newState = this.state;
-      newState.city = {id: this.state.cities.length + 1, name: value};
+      newState.city = {id: this.state.cities.length + 1, name: value.replace(value[0], value[0].toUpperCase())};
       this.setState(newState);
       newState.cities.push(newState.city);
       this.setState(newState);
