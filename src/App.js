@@ -2,17 +2,6 @@ import React, { Component } from 'react';
 import './App.css';
 import request from 'superagent';
 
-const Weather = location => {
-   console.log(location);
-   const API_URL = `https://api.darksky.net/forecast/7b99d5e089197748e933189d8174655f/${location.lat},${location.lng}`;
-   request
-      .get(API_URL)
-      .then(response => { 
-        console.log(response.body.currently);
-        let weather = response.body.currently.summary;
-        document.querySelector(".app__view").textContent = weather;
-      });
-}
 
 class App extends Component {
   constructor(){
@@ -20,7 +9,15 @@ class App extends Component {
 
     this.state = {
       checked: false,
+      show: false,
       city: {},
+      country: '',
+      weather: '',
+      date: '',
+      humidity: '',
+      temperature: '',
+      pressure: '',
+      wind: '',
       cities: [{
         id: 1,
         name: 'France'
@@ -46,9 +43,30 @@ class App extends Component {
       newState.city = {id: this.state.cities.length + 1, name: value.replace(value[0], value[0].toUpperCase())};
       this.setState(newState);
       newState.cities.push(newState.city);
+      newState.checked = false;
       this.setState(newState);
     }
   }
+
+  weather = (location) => {
+     console.log(location);
+     const API_URL = `https://api.darksky.net/forecast/7b99d5e089197748e933189d8174655f/${location.lat},${location.lng}`;
+
+     request
+        .get(API_URL)
+        .then(response => { 
+          console.log(response.body.currently);
+          let date = new Date(response.body.currently.time * 1000);
+          console.log(date);
+          this.setState({
+            weather: response.body.currently.summary,
+            humidity: response.body.currently.humidity,
+            pressure: response.body.currently.pressure,
+            temperature: response.body.currently.temperature,
+            wind: response.body.currently.windSpeed
+          })
+        });
+  }  
   
   getWeather = (e) => {
     e.preventDefault();
@@ -58,12 +76,18 @@ class App extends Component {
     request
       .get(API_URL)
       .then(function(response){
+        let location = {};
         let countryData = response.body.results;
         countryData.forEach(function(data){
-          let location = data.geometry.location;
-          Weather(location);
+          location = data.geometry.location;
         })
-      });
+        return location;
+      })
+      .then(this.weather);
+    this.setState({
+      show: true,
+      country: country
+    })
    }
 
 
@@ -89,7 +113,22 @@ class App extends Component {
               </form>
             }
           </aside>
-          <section className='app__view'></section>
+          <section className='app__view'>
+               <p className='app__view__title'>{ this.state.country }</p>
+               <p className='app__view__date'>{ this.state.date }</p>
+               <p className='app__view__weather'>{ this.state.weather }</p>
+               { this.state.show &&
+                 <div className='app__view__data'>
+                    <ul>
+                      <li><div className="li-data">Humidity</div><div className="span-data">{ this.state.humidity }</div></li>
+                      <li><div className="li-data">Pressure</div><div className="span-data">{ this.state.pressure }</div></li>
+                      <li><div className="li-data">Temperature</div><div className="span-data">{ this.state.temperature }</div></li>
+                      <li><div className="li-data">Wind</div><div className="span-data">{ this.state.wind }</div></li>
+                    </ul>
+                 </div>
+                }
+          </section>
+  
         </div>
       </div>
     );

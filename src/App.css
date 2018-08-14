@@ -58,6 +58,56 @@
   padding: 20px;
 }
 
+.app__view__weather {
+    padding: 20px;
+    position: relative;
+    bottom: 64px;
+    right: 19px;
+}
+
+
+.app__view__date {
+    padding: 20px;
+    position: relative;
+    bottom: 23px;
+    right: 20px;
+}
+
+.app__view__data {
+    padding: 20px;
+    position: relative;
+    bottom: 69px;
+    border: 1px solid grey;
+    background: white;
+    left: 2px;
+    width: 370px;
+}
+
+.app__view__data li {
+    list-style: none;
+}
+
+.app__view__data ul {
+    position: relative;
+    right: 32px;
+}
+
+.app__view__data span {
+  margin-left: 20px;
+}
+
+.span-data {
+  position: relative;
+  left: 130px;
+  bottom: 18px;
+  color: #5DADE2;
+}
+
+
+.li-data {
+  width: 30px;
+}
+
 .grid {
   display: flex;
   height: calc(100vh - 40px);
